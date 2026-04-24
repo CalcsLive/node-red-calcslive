@@ -1,0 +1,108 @@
+<script type="text/javascript">
+  RED.nodes.registerType('calcslive-calculate', {
+    category: 'CalcsLive',
+    color: '#4A90D9',
+    defaults: {
+      name: { value: '' },
+      configNodeId: { value: '', type: 'calcslive-config', required: true },
+      articleId: { value: '', required: true },
+      inputs: { value: '{}' },
+      outputs: { value: '' }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'calcslive.svg',
+    label: function () {
+      return this.name || this.articleId || 'CalcsLive Calculate';
+    },
+    paletteLabel: 'CalcsLive',
+    oneditprepare: function () {
+      var inputsField = document.getElementById('node-input-inputs');
+      var outputsField = document.getElementById('node-input-outputs');
+
+      function validateJson(field) {
+        if (!field.value.trim()) return;
+        try {
+          JSON.parse(field.value);
+          field.style.borderColor = '';
+        } catch (e) {
+          field.style.borderColor = 'red';
+        }
+      }
+
+      inputsField.addEventListener('blur', function () { validateJson(inputsField); });
+      outputsField.addEventListener('blur', function () { validateJson(outputsField); });
+    }
+  });
+</script>
+
+<script type="text/html" data-template-name="calcslive-calculate">
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="CalcsLive Calculate" style="width:70%">
+  </div>
+  <div class="form-row">
+    <label for="node-input-configNodeId"><i class="fa fa-cog"></i> Config</label>
+    <input type="text" id="node-input-configNodeId" style="width:70%">
+  </div>
+  <div class="form-row">
+    <label for="node-input-articleId"><i class="fa fa-file-text-o"></i> Article ID</label>
+    <input type="text" id="node-input-articleId" placeholder="e.g. 3LYPD4C96-34U" style="width:70%">
+    <div class="form-tips" style="margin-top:4px">
+      Find your article ID in the CalcsLive editor URL. Override at runtime with <code>msg.articleId</code>.
+    </div>
+  </div>
+  <div class="form-row">
+    <label for="node-input-inputs"><i class="fa fa-arrow-right"></i> Inputs</label>
+    <textarea id="node-input-inputs" rows="5" style="width:70%;font-family:monospace;font-size:12px"
+      placeholder='{"v": {"value": 5, "unit": "m/s"}, "m": {"value": 10, "unit": "kg"}}'></textarea>
+    <div class="form-tips">JSON object mapping symbol → <code>{"value": number, "unit": "string"}</code>. Override with <code>msg.inputs</code>.</div>
+  </div>
+  <div class="form-row">
+    <label for="node-input-outputs"><i class="fa fa-arrow-left"></i> Outputs</label>
+    <textarea id="node-input-outputs" rows="3" style="width:70%;font-family:monospace;font-size:12px"
+      placeholder='{"KE": {"unit": "J"}} — leave empty to return all outputs'></textarea>
+    <div class="form-tips">JSON object mapping symbol → <code>{"unit": "string"}</code>. Leave empty to return all. Override with <code>msg.outputs</code>.</div>
+  </div>
+</script>
+
+<script type="text/html" data-help-name="calcslive-calculate">
+  <p>Executes a unit-aware calculation using a <a href="https://www.calcslive.com" target="_blank">CalcsLive</a> article.</p>
+
+  <h3>Properties</h3>
+  <dl class="message-properties">
+    <dt>Config</dt>
+    <dd>A <code>calcslive-config</code> node holding your API key and base URL.</dd>
+    <dt>Article ID</dt>
+    <dd>The short ID of the CalcsLive calculation article to use as a function.</dd>
+    <dt>Inputs</dt>
+    <dd>JSON: <code>{"symbol": {"value": 5, "unit": "m/s"}}</code></dd>
+    <dt>Outputs</dt>
+    <dd>JSON: <code>{"symbol": {"unit": "J"}}</code>. Leave empty to return all outputs.</dd>
+  </dl>
+
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <dt class="optional">msg.articleId <span class="property-type">string</span></dt>
+    <dd>Overrides the Article ID set in the node editor.</dd>
+    <dt class="optional">msg.inputs <span class="property-type">object</span></dt>
+    <dd>Overrides the Inputs JSON at runtime.</dd>
+    <dt class="optional">msg.outputs <span class="property-type">object</span></dt>
+    <dd>Overrides the Outputs JSON at runtime.</dd>
+  </dl>
+
+  <h3>Outputs</h3>
+  <dl class="message-properties">
+    <dt>msg.payload <span class="property-type">object</span></dt>
+    <dd>Calculation outputs: <code>{"KE": {"value": 125, "unit": "J", "baseValue": 125, "baseUnit": "J", "expression": "0.5*m*v^2"}}</code></dd>
+    <dt>msg.calcslive <span class="property-type">object</span></dt>
+    <dd>Full API response including echoed inputs, outputs, and usage statistics.</dd>
+    <dt class="optional">msg.error <span class="property-type">object</span></dt>
+    <dd>Set on error: <code>{"code": "API_ERROR_CODE", "message": "...", "statusCode": 401}</code></dd>
+  </dl>
+
+  <h3>Details</h3>
+  <p>The node calls <code>POST /api/v1/calculate</code> on CalcsLive with a Bearer token.
+  Calculations are stateless — the article is never modified.</p>
+  <p>Use a <b>Catch</b> node to handle errors.</p>
+</script>
