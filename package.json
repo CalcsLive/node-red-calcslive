@@ -25,6 +25,12 @@
   "engines": {
     "node": ">=18"
   },
+  "files": [
+    "nodes/",
+    "lib/",
+    "icons/",
+    "README.md"
+  ],
   "scripts": {
     "test": "mocha test/**_spec.js --timeout 5000"
   },
