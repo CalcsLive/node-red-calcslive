@@ -9,8 +9,8 @@ module.exports = function (RED) {
     const node = this;
     node.configNode = RED.nodes.getNode(config.configNodeId);
     node.articleId = config.articleId;
-    node.inputsJson = config.inputs || '{}';
-    node.outputsJson = config.outputs || '';
+    node.inputsJson = config.inputsJson || '{}';
+    node.outputsJson = config.outputsJson || '';
 
     node.on('input', async function (msg, send, done) {
       // Guard: config node required

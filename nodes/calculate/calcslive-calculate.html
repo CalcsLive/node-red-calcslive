@@ -6,8 +6,8 @@
       name: { value: '' },
       configNodeId: { value: '', type: 'calcslive-config', required: true },
       articleId: { value: '', required: true },
-      inputs: { value: '{}' },
-      outputs: { value: '' }
+      inputsJson: { value: '' },
+      outputsJson: { value: '' }
     },
     inputs: 1,
     outputs: 1,
@@ -17,8 +17,8 @@
     },
     paletteLabel: 'CalcsLive',
     oneditprepare: function () {
-      var inputsField = document.getElementById('node-input-inputs');
-      var outputsField = document.getElementById('node-input-outputs');
+      var inputsField = document.getElementById('node-input-inputsJson');
+      var outputsField = document.getElementById('node-input-outputsJson');
 
       function validateJson(field) {
         if (!field.value.trim()) return;
@@ -49,20 +49,31 @@
     <label for="node-input-articleId"><i class="fa fa-file-text-o"></i> Article ID</label>
     <input type="text" id="node-input-articleId" placeholder="e.g. 3LYPD4C96-34U" style="width:70%">
     <div class="form-tips" style="margin-top:4px">
-      Find your article ID in the CalcsLive editor URL. Override at runtime with <code>msg.articleId</code>.
+      Find your article ID in the CalcsLive editor URL. Can be overridden at runtime with <code>msg.articleId</code>.
     </div>
   </div>
   <div class="form-row">
-    <label for="node-input-inputs"><i class="fa fa-arrow-right"></i> Inputs</label>
-    <textarea id="node-input-inputs" rows="5" style="width:70%;font-family:monospace;font-size:12px"
-      placeholder='{"v": {"value": 5, "unit": "m/s"}, "m": {"value": 10, "unit": "kg"}}'></textarea>
-    <div class="form-tips">JSON object mapping symbol → <code>{"value": number, "unit": "string"}</code>. Override with <code>msg.inputs</code>.</div>
+    <label for="node-input-inputsJson"><i class="fa fa-arrow-right"></i> Inputs</label>
+    <textarea id="node-input-inputsJson" rows="6" style="width:100%;font-family:monospace;font-size:12px"
+      placeholder='Leave empty to use msg.inputs at runtime, or enter static values, e.g.:&#10;{&#10;  "m": {"value": 10, "unit": "kg"},&#10;  "v": {"value": 5,  "unit": "m/s"}&#10;}'></textarea>
+    <div class="form-tips">
+      Each input: <code>"symbol": {"value": &lt;number&gt;, "unit": "&lt;unit&gt;"}</code><br>
+      Leave empty and set <code>msg.inputs</code> upstream to drive values dynamically.
+    </div>
   </div>
   <div class="form-row">
-    <label for="node-input-outputs"><i class="fa fa-arrow-left"></i> Outputs</label>
-    <textarea id="node-input-outputs" rows="3" style="width:70%;font-family:monospace;font-size:12px"
-      placeholder='{"KE": {"unit": "J"}} — leave empty to return all outputs'></textarea>
-    <div class="form-tips">JSON object mapping symbol → <code>{"unit": "string"}</code>. Leave empty to return all. Override with <code>msg.outputs</code>.</div>
+    <label for="node-input-outputsJson"><i class="fa fa-arrow-left"></i> Outputs</label>
+    <textarea id="node-input-outputsJson" rows="4" style="width:100%;font-family:monospace;font-size:12px"
+      placeholder='Leave empty to return all outputs, or specify units, e.g.:&#10;{&#10;  "KE": {"unit": "J"}&#10;}'></textarea>
+    <div class="form-tips">
+      Each output: <code>"symbol": {"unit": "&lt;desired unit&gt;"}</code><br>
+      Leave empty to return all outputs in their default units. Set <code>msg.outputs</code> to override at runtime.
+    </div>
+  </div>
+  <div class="form-row" style="margin-top:8px;background:#f0f4ff;padding:8px;border-radius:4px;font-size:12px">
+    <b>Result shape</b> — <code>msg.payload</code> on success:<br>
+    <code style="font-size:11px">{ "KE": { "value": 125, "unit": "J", "baseValue": 125, "baseUnit": "J" } }</code><br>
+    Full response (inputs + usage) available on <code>msg.calcslive</code>.
   </div>
 </script>
 

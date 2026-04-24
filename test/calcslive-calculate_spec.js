@@ -13,7 +13,7 @@ describe('calcslive-calculate node', function () {
 
   it('should error when no config node is selected', function (done) {
     const flow = [
-      { id: 'n1', type: 'calcslive-calculate', name: 'test', configNodeId: '', articleId: 'abc', inputs: '{}', outputs: '' }
+      { id: 'n1', type: 'calcslive-calculate', name: 'test', configNodeId: '', articleId: 'abc', inputsJson: '{}', outputsJson: '' }
     ];
     helper.load([calculateNode, configNode], flow, function () {
       const n1 = helper.getNode('n1');
@@ -28,7 +28,7 @@ describe('calcslive-calculate node', function () {
   it('should error when article ID is missing', function (done) {
     const flow = [
       { id: 'cfg1', type: 'calcslive-config', name: 'test config', baseUrl: 'https://www.calcslive.com' },
-      { id: 'n1', type: 'calcslive-calculate', name: 'test', configNodeId: 'cfg1', articleId: '', inputs: '{}', outputs: '' }
+      { id: 'n1', type: 'calcslive-calculate', name: 'test', configNodeId: 'cfg1', articleId: '', inputsJson: '{}', outputsJson: '' }
     ];
     const credentials = { cfg1: { apiKey: 'test-key' } };
     helper.load([calculateNode, configNode], flow, credentials, function () {
@@ -44,7 +44,7 @@ describe('calcslive-calculate node', function () {
   it('should error when inputs JSON is invalid', function (done) {
     const flow = [
       { id: 'cfg1', type: 'calcslive-config', name: 'test config', baseUrl: 'https://www.calcslive.com' },
-      { id: 'n1', type: 'calcslive-calculate', name: 'test', configNodeId: 'cfg1', articleId: 'abc123', inputs: 'not-json', outputs: '' }
+      { id: 'n1', type: 'calcslive-calculate', name: 'test', configNodeId: 'cfg1', articleId: 'abc123', inputsJson: 'not-json', outputsJson: '' }
     ];
     const credentials = { cfg1: { apiKey: 'test-key' } };
     helper.load([calculateNode, configNode], flow, credentials, function () {
@@ -61,7 +61,7 @@ describe('calcslive-calculate node', function () {
     this.timeout(8000);
     const flow = [
       { id: 'cfg1', type: 'calcslive-config', name: 'test config', baseUrl: 'http://localhost:19999' },
-      { id: 'n1', type: 'calcslive-calculate', name: 'test', configNodeId: 'cfg1', articleId: 'static-id', inputs: '{}', outputs: '' }
+      { id: 'n1', type: 'calcslive-calculate', name: 'test', configNodeId: 'cfg1', articleId: 'static-id', inputsJson: '{}', outputsJson: '' }
     ];
     const credentials = { cfg1: { apiKey: 'test-key' } };
     helper.load([calculateNode, configNode], flow, credentials, function () {
