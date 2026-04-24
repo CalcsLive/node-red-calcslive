@@ -2,43 +2,77 @@
 
 Unit-aware calculations for Node-RED via [CalcsLive](https://www.calcslive.com).
 
+Plug any CalcsLive calculation article into your Node-RED flow as a blackbox UDF. Send input values in any unit — receive output values in any unit. 540+ units across 64+ categories handled automatically.
+
 ## Install
 
-In your Node-RED user directory (`~/.node-red`):
+From the Node-RED palette manager: search for **calcslive**.
+
+Or in your Node-RED user directory:
 
 ```bash
 npm install node-red-contrib-calcslive
 ```
 
-Or install from the Node-RED palette manager: search for `calcslive`.
+## Setup
 
-## Nodes
+1. **Create a CalcsLive account** at [calcslive.com](https://www.calcslive.com)
+2. **Get an API key** at [calcslive.com/account/api-keys](https://www.calcslive.com/account/api-keys)
+3. **Create or find a public calculation article** — note its short ID from the URL
+4. In Node-RED, add a **CalcsLive Calculate** node and configure it:
+   - **Config** → Add new `calcslive-config` → paste your API key
+   - **Article ID** → paste the article short ID
+   - **Inputs** → JSON with your input symbols and values
+   - **Outputs** → JSON with desired output symbols (leave empty for all)
 
-### calcslive-calculate
+## Node: calcslive-calculate
 
-Executes a CalcsLive calculation article as a unit-aware function.
+### Config Panel
 
-**Config panel properties:**
-- **Config** — select a `calcslive-config` credential node
-- **Article ID** — the CalcsLive article short ID (e.g. `3LYPD4C96-34U`)
-- **Inputs** — JSON object: `{"symbol": {"value": 5, "unit": "m/s"}}`
-- **Outputs** — JSON object: `{"symbol": {"unit": "J"}}` (leave empty for all outputs)
+| Field | Description |
+|-------|-------------|
+| Config | Select a `calcslive-config` credential node |
+| Article ID | Short ID of the CalcsLive article (e.g. `3LYPD4C96-34U`) |
+| Inputs | JSON: `{"symbol": {"value": 5, "unit": "m/s"}}` |
+| Outputs | JSON: `{"symbol": {"unit": "J"}}` — leave empty to return all outputs |
 
-**msg overrides** — set before the node to override static config at runtime:
-- `msg.articleId` — overrides Article ID
-- `msg.inputs` — overrides Inputs JSON
-- `msg.outputs` — overrides Outputs JSON
+### Runtime msg Overrides
 
-**Outputs:**
-- `msg.payload` — calculation outputs: `{"KE": {"value": 125, "unit": "J", "baseValue": 125, "baseUnit": "J"}}`
-- `msg.calcslive` — full API response (inputs echo, outputs, usage info)
+Set these on `msg` before the node to override static config:
 
-## Example Flow
+| Property | Type | Description |
+|----------|------|-------------|
+| `msg.articleId` | string | Overrides Article ID |
+| `msg.inputs` | object | Overrides Inputs JSON |
+| `msg.outputs` | object | Overrides Outputs JSON |
+
+### Output
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `msg.payload` | object | Calculation outputs: `{"KE": {"value": 125, "unit": "J", ...}}` |
+| `msg.calcslive` | object | Full API response (inputs echo, outputs, usage) |
+| `msg.error` | object | Set on error: `{"code": "...", "message": "...", "statusCode": 401}` |
+
+### Example Flow
 
 ```json
-[{"id":"inject1","type":"inject","name":"Test","payload":"{}","payloadType":"json","wires":[["calc1"]]},{"id":"calc1","type":"calcslive-calculate","name":"Kinetic Energy","configNodeId":"cfg1","articleId":"YOUR_ARTICLE_ID","inputs":"{\"m\":{\"value\":10,\"unit\":\"kg\"},\"v\":{\"value\":5,\"unit\":\"m/s\"}}","outputs":"","wires":[["debug1"]]},{"id":"debug1","type":"debug","name":"Result","active":true,"wires":[]},{"id":"cfg1","type":"calcslive-config","name":"My CalcsLive"}]
+[{"id":"inject1","type":"inject","name":"Trigger","payload":"{}","payloadType":"json","wires":[["calc1"]]},{"id":"calc1","type":"calcslive-calculate","name":"Kinetic Energy","configNodeId":"cfg1","articleId":"YOUR_ARTICLE_ID","inputs":"{\"m\":{\"value\":10,\"unit\":\"kg\"},\"v\":{\"value\":5,\"unit\":\"m/s\"}}","outputs":"","wires":[["debug1"]]},{"id":"debug1","type":"debug","name":"Result","active":true,"wires":[]},{"id":"cfg1","type":"calcslive-config","name":"My CalcsLive"}]
 ```
+
+## Error Handling
+
+Wire a **Catch** node scoped to the CalcsLive node to handle errors. `msg.error.code` values:
+
+| Code | Meaning |
+|------|---------|
+| `API_KEY_REQUIRED` | Invalid or missing API key |
+| `RESOURCE_NOT_FOUND` | Article ID not found |
+| `RESOURCE_ACCESS_DENIED` | Private article not owned by your account |
+| `CALC_UNDEFINED_SYMBOL` | Unknown symbol in calculation expression |
+| `VALIDATION_INVALID_FORMAT` | Malformed request |
+| *(network error)* | CalcsLive unreachable or timed out |
 
 ## License
 
-MIT
+MIT — [CalcsLive](https://www.calcslive.com)
