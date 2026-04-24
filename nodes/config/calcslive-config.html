@@ -1,0 +1,33 @@
+<script type="text/javascript">
+  RED.nodes.registerType('calcslive-config', {
+    category: 'config',
+    defaults: {
+      name: { value: '' },
+      baseUrl: { value: 'https://www.calcslive.com' }
+    },
+    credentials: {
+      apiKey: { type: 'password' }
+    },
+    label: function () {
+      return this.name || 'CalcsLive Config';
+    }
+  });
+</script>
+
+<script type="text/html" data-template-name="calcslive-config">
+  <div class="form-row">
+    <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-config-input-name" placeholder="My CalcsLive Account" style="width:70%">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-baseUrl"><i class="fa fa-globe"></i> Base URL</label>
+    <input type="text" id="node-config-input-baseUrl" placeholder="https://www.calcslive.com" style="width:70%">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-apiKey"><i class="fa fa-key"></i> API Key</label>
+    <input type="password" id="node-config-input-apiKey" placeholder="Your CalcsLive API key" style="width:70%">
+  </div>
+  <div class="form-tips">
+    Get your API key at <a href="https://www.calcslive.com/account/api-keys" target="_blank">calcslive.com/account/api-keys</a>
+  </div>
+</script>
