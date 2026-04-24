@@ -1,0 +1,42 @@
+{
+  "name": "node-red-contrib-calcslive",
+  "version": "0.1.0",
+  "description": "Unit-aware calculations for Node-RED via CalcsLive. 540+ units, 64+ categories, zero config unit conversion.",
+  "keywords": [
+    "node-red",
+    "node-red-nodeset",
+    "calcslive",
+    "units",
+    "calculator",
+    "engineering",
+    "physics",
+    "conversion"
+  ],
+  "license": "MIT",
+  "author": "CalcsLive <don.wen@calcslive.com> (https://www.calcslive.com)",
+  "homepage": "https://www.calcslive.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/calcslive/node-red-contrib-calcslive.git"
+  },
+  "bugs": {
+    "url": "https://github.com/calcslive/node-red-contrib-calcslive/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "mocha test/**_spec.js --timeout 5000"
+  },
+  "node-red": {
+    "version": ">=3.0.0",
+    "nodes": {
+      "calcslive-config": "nodes/config/calcslive-config.js",
+      "calcslive-calculate": "nodes/calculate/calcslive-calculate.js"
+    }
+  },
+  "devDependencies": {
+    "mocha": "^10.0.0",
+    "node-red-node-test-helper": "^0.3.4"
+  }
+}
