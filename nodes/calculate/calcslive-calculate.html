@@ -5,20 +5,20 @@
     defaults: {
       name: { value: '' },
       configNodeId: { value: '', type: 'calcslive-config', required: true },
-      articleId: { value: '', required: true },
-      inputsJson: { value: '' },
-      outputsJson: { value: '' }
+      articleId: { value: '' },
+      inputPQs: { value: '' },
+      outputPQs: { value: '' }
     },
     inputs: 1,
     outputs: 1,
     icon: 'calcslive.svg',
     label: function () {
-      return this.name || this.articleId || 'CalcsLive Calculate';
+      return this.name || this.articleId || 'CalcsLive (msg.articleId)';
     },
     paletteLabel: 'CalcsLive',
     oneditprepare: function () {
-      var inputsField = document.getElementById('node-input-inputsJson');
-      var outputsField = document.getElementById('node-input-outputsJson');
+      var inputsField = document.getElementById('node-input-inputPQs');
+      var outputsField = document.getElementById('node-input-outputPQs');
 
       function validateJson(field) {
         if (!field.value.trim()) return;
@@ -53,8 +53,8 @@
     </div>
   </div>
   <div class="form-row">
-    <label for="node-input-inputsJson"><i class="fa fa-arrow-right"></i> Inputs</label>
-    <textarea id="node-input-inputsJson" rows="6" style="width:100%;font-family:monospace;font-size:12px"
+    <label for="node-input-inputPQs"><i class="fa fa-arrow-right"></i> Inputs</label>
+    <textarea id="node-input-inputPQs" rows="6" style="width:100%;font-family:monospace;font-size:12px"
       placeholder='Leave empty to use msg.inputs at runtime, or enter static values, e.g.:&#10;{&#10;  "m": {"value": 10, "unit": "kg"},&#10;  "v": {"value": 5,  "unit": "m/s"}&#10;}'></textarea>
     <div class="form-tips">
       Each input: <code>"symbol": {"value": &lt;number&gt;, "unit": "&lt;unit&gt;"}</code><br>
@@ -62,8 +62,8 @@
     </div>
   </div>
   <div class="form-row">
-    <label for="node-input-outputsJson"><i class="fa fa-arrow-left"></i> Outputs</label>
-    <textarea id="node-input-outputsJson" rows="4" style="width:100%;font-family:monospace;font-size:12px"
+    <label for="node-input-outputPQs"><i class="fa fa-arrow-left"></i> Outputs</label>
+    <textarea id="node-input-outputPQs" rows="4" style="width:100%;font-family:monospace;font-size:12px"
       placeholder='Leave empty to return all outputs, or specify units, e.g.:&#10;{&#10;  "KE": {"unit": "J"}&#10;}'></textarea>
     <div class="form-tips">
       Each output: <code>"symbol": {"unit": "&lt;desired unit&gt;"}</code><br>

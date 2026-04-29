@@ -9,8 +9,8 @@ module.exports = function (RED) {
     const node = this;
     node.configNode = RED.nodes.getNode(config.configNodeId);
     node.articleId = config.articleId;
-    node.inputsJson = config.inputsJson || '{}';
-    node.outputsJson = config.outputsJson || '';
+    node.inputPQs = config.inputPQs || '{}';
+    node.outputPQs = config.outputPQs || '';
 
     node.on('input', async function (msg, send, done) {
       // Guard: config node required
@@ -42,11 +42,11 @@ module.exports = function (RED) {
       try {
         inputs = msg.inputs !== undefined
           ? msg.inputs
-          : JSON.parse(node.inputsJson || '{}');
+          : JSON.parse(node.inputPQs || '{}');
 
         outputs = msg.outputs !== undefined
           ? msg.outputs
-          : (node.outputsJson ? JSON.parse(node.outputsJson) : undefined);
+          : (node.outputPQs ? JSON.parse(node.outputPQs) : undefined);
       } catch (e) {
         node.status({ fill: 'red', shape: 'dot', text: 'Invalid JSON' });
         node.error(`Invalid JSON in inputs/outputs: ${e.message}`, msg);
@@ -62,7 +62,7 @@ module.exports = function (RED) {
         if (outputs !== undefined) requestBody.outputs = outputs;
 
         const response = await makeRequest({
-          url: `${node.configNode.baseUrl}/api/v1/calculate`,
+          url: `${node.configNode.baseUrl}/api/node-red/v1/calculate`,
           method: 'POST',
           apiKey,
           body: requestBody,
@@ -79,10 +79,10 @@ module.exports = function (RED) {
           return;
         }
 
-        // Unwrap response — handle both {data: {outputs}} and {outputs} shapes
-        const responseData = response.body.data || response.body;
+        // Unwrap response: { success, data: { calculation: { inputs, outputs, ... } } }
+        const responseData = (response.body.data && response.body.data.calculation) || response.body.data || response.body;
         msg.payload = responseData.outputs || {};
-        msg.calcslive = responseData;
+        msg.calcslive = responseData;  // { articleId, articleTitle, inputs, outputs, executionTime, totalPQs }
         msg.statusCode = 200;
 
         node.status({ fill: 'green', shape: 'dot', text: 'ok' });

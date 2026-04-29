@@ -2,7 +2,7 @@
 
 Unit-aware calculations for Node-RED via [CalcsLive](https://www.calcslive.com).
 
-Plug any CalcsLive calculation article into your Node-RED flow as a blackbox UDF. Send input values in any unit — receive output values in any unit. 540+ units across 64+ categories handled automatically.
+Plug any CalcsLive calculation article into your Node-RED flow as a blackbox UDF. Send input values in any unit — receive output values in any unit. 570+ units across 67+ categories handled automatically.
 
 ## Install
 
