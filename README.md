@@ -2,9 +2,11 @@
 
 Unit-aware calculations for Node-RED via [CalcsLive](https://www.calcslive.com).
 
-Plug any CalcsLive calculation article into your Node-RED flow as a blackbox UDF. Send input values in any unit — receive output values in any unit. 570+ units across 67+ categories handled automatically.
+Plug any CalcsLive calculation article into your Node-RED flow as a blackbox UDF. Send input values in any unit — receive output values in any unit. 630+ units across 70+ categories handled automatically.
 
 ## Install
+
+> Requires Node-RED 3.0 or later and Node.js 18+.
 
 From the Node-RED palette manager: search for **calcslive**.
 
@@ -57,7 +59,7 @@ Set these on `msg` before the node to override static config:
 ### Example Flow
 
 ```json
-[{"id":"inject1","type":"inject","name":"Trigger","payload":"{}","payloadType":"json","wires":[["calc1"]]},{"id":"calc1","type":"calcslive-calculate","name":"Kinetic Energy","configNodeId":"cfg1","articleId":"YOUR_ARTICLE_ID","inputs":"{\"m\":{\"value\":10,\"unit\":\"kg\"},\"v\":{\"value\":5,\"unit\":\"m/s\"}}","outputs":"","wires":[["debug1"]]},{"id":"debug1","type":"debug","name":"Result","active":true,"wires":[]},{"id":"cfg1","type":"calcslive-config","name":"My CalcsLive"}]
+[{"id":"inject1","type":"inject","name":"Trigger","payload":"{}","payloadType":"json","wires":[["calc1"]]},{"id":"calc1","type":"calcslive-calculate","name":"Speed Calculator","configNodeId":"cfg1","articleId":"3M7ALBF4U-3BL","inputs":"{\"d\":{\"value\":100,\"unit\":\"km\"},\"t\":{\"value\":1,\"unit\":\"h\"}}","outputs":"{\"v\":{\"unit\":\"km/h\"}}","wires":[["debug1"]]},{"id":"debug1","type":"debug","name":"Result","active":true,"wires":[]},{"id":"cfg1","type":"calcslive-config","name":"My CalcsLive"}]
 ```
 
 ## Error Handling

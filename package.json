@@ -1,7 +1,7 @@
 {
   "name": "node-red-contrib-calcslive",
   "version": "0.1.0",
-  "description": "Unit-aware calculations for Node-RED via CalcsLive. 540+ units, 64+ categories, zero config unit conversion.",
+  "description": "Unit-aware calculations for Node-RED via CalcsLive. 630+ units, 70+ categories, zero config unit conversion.",
   "keywords": [
     "node-red",
     "node-red-nodeset",
