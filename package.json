@@ -1,5 +1,5 @@
 {
-  "name": "node-red-contrib-calcslive",
+  "name": "@calcslive/node-red-calcslive",
   "version": "0.1.0",
   "description": "Unit-aware calculations for Node-RED via CalcsLive. 630+ units, 70+ categories, zero config unit conversion.",
   "keywords": [
@@ -17,10 +17,10 @@
   "homepage": "https://www.calcslive.com",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/calcslive/node-red-contrib-calcslive.git"
+    "url": "git+https://github.com/calcslive/node-red-calcslive.git"
   },
   "bugs": {
-    "url": "https://github.com/calcslive/node-red-contrib-calcslive/issues"
+    "url": "https://github.com/calcslive/node-red-calcslive/issues"
   },
   "engines": {
     "node": ">=18"

@@ -1,4 +1,4 @@
-# node-red-contrib-calcslive
+# @calcslive/node-red-calcslive
 
 Unit-aware calculations for Node-RED via [CalcsLive](https://www.calcslive.com).
 
@@ -13,7 +13,7 @@ From the Node-RED palette manager: search for **calcslive**.
 Or in your Node-RED user directory:
 
 ```bash
-npm install node-red-contrib-calcslive
+npm install @calcslive/node-red-calcslive
 ```
 
 ## Setup
