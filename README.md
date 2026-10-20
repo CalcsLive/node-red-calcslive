@@ -56,11 +56,28 @@ Set these on `msg` before the node to override static config:
 | `msg.calcslive` | object | Full API response (inputs echo, outputs, usage) |
 | `msg.error` | object | Set on error: `{"code": "...", "message": "...", "statusCode": 401}` |
 
-### Example Flow
+### Example Flows
+
+#### Quick Start
 
 ```json
 [{"id":"inject1","type":"inject","name":"Trigger","payload":"{}","payloadType":"json","wires":[["calc1"]]},{"id":"calc1","type":"calcslive-calculate","name":"Speed Calculator","configNodeId":"cfg1","articleId":"3M7ALBF4U-3BL","inputs":"{\"d\":{\"value\":100,\"unit\":\"km\"},\"t\":{\"value\":1,\"unit\":\"h\"}}","outputs":"{\"v\":{\"unit\":\"km/h\"}}","wires":[["debug1"]]},{"id":"debug1","type":"debug","name":"Result","active":true,"wires":[]},{"id":"cfg1","type":"calcslive-config","name":"My CalcsLive"}]
 ```
+
+#### Four-Method Demo Flow
+
+The `examples/` folder contains a full demo flow ([speed-calc-demo-4-methods.json](examples/speed-calc-demo-4-methods.json)) showing four ways to use the node with the same speed calculation article:
+
+![Four-method demo flow](examples/speed-calc-demo-4-methods.png)
+
+| Path | Approach | Best for |
+|------|----------|----------|
+| **A** | Dashboard input nodes → function builds `msg.inputs` | Interactive UIs where users enter values |
+| **B** | JSON configured statically inside the node | Fixed automation triggers, scheduled jobs |
+| **C** | Dashboard JSON editor → parse → `msg.inputs` | Power users who want to edit raw JSON at runtime |
+| **D** | Article ID + JSON → CalcsLive → gauge + article link | Full ecosystem demo, dynamic article selection |
+
+Import via **Node-RED menu → Import → select file**. Requires `@flowfuse/node-red-dashboard`.
 
 ## Error Handling
 

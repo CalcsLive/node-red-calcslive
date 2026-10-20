@@ -1,0 +1,1062 @@
+[
+    {
+        "id": "speed-two-methods-demo",
+        "type": "tab",
+        "label": "Speed Calculator - 4 Methods",
+        "disabled": false,
+        "info": "Same CalcsLive article in 3 ways. \r\nA: form -> msg.inputs/msg.outputs -> CalcsLive. \r\nB: trigger -> CalcsLive with JSON configured inside the node. \r\nC: JSON inputs -> CalcsLive node\r\nD: CalcsLive articleId + JSON inputs -> CalcsLive node\r\n\r\nTest all with 120 km / 2 h = 60 km/h."
+    },
+    {
+        "id": "speed-demo-form",
+        "type": "ui-form",
+        "z": "speed-two-methods-demo",
+        "name": "A: Enter distance, time and units",
+        "group": "speed-demo-a",
+        "label": "",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "options": [
+            {
+                "label": "Distance",
+                "key": "d",
+                "type": "number",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Distance Unit",
+                "key": "d_unit",
+                "type": "dropdown",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Time",
+                "key": "t",
+                "type": "number",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Time Unit",
+                "key": "t_unit",
+                "type": "dropdown",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Result Speed Unit",
+                "key": "v_unit",
+                "type": "dropdown",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "d": 120,
+            "d_unit": "km",
+            "t": 2,
+            "t_unit": "h",
+            "v_unit": "km/h"
+        },
+        "payload": "",
+        "submit": "Calculate",
+        "cancel": "clear",
+        "resetOnSubmit": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "splitLayout": true,
+        "className": "",
+        "passthru": false,
+        "dropdownOptions": [
+            {
+                "dropdown": "d_unit",
+                "value": "km",
+                "label": "km"
+            },
+            {
+                "dropdown": "d_unit",
+                "value": "m",
+                "label": "m"
+            },
+            {
+                "dropdown": "t_unit",
+                "value": "h",
+                "label": "h"
+            },
+            {
+                "dropdown": "t_unit",
+                "value": "minute",
+                "label": "minute"
+            },
+            {
+                "dropdown": "t_unit",
+                "value": "s",
+                "label": "s"
+            },
+            {
+                "dropdown": "v_unit",
+                "value": "km/h",
+                "label": "km/h"
+            },
+            {
+                "dropdown": "v_unit",
+                "value": "m/s",
+                "label": "m/s"
+            },
+            {
+                "dropdown": "v_unit",
+                "value": "fpm",
+                "label": "fpm"
+            }
+        ],
+        "x": 170,
+        "y": 160,
+        "wires": [
+            [
+                "speed-demo-build"
+            ]
+        ]
+    },
+    {
+        "id": "speed-demo-build",
+        "type": "function",
+        "z": "speed-two-methods-demo",
+        "name": "A: Build msg.inputs and msg.outputs",
+        "func": "const p = msg.payload || {};\n\nconst d = Number(p.d);\nconst t = Number(p.t);\n\nif (p.d === \"\" || p.d == null || !Number.isFinite(d) || d < 0) {\n    node.error(\"Enter a valid distance of zero or more.\", msg);\n    return null;\n}\n\nif (p.t === \"\" || p.t == null || !Number.isFinite(t) || t <= 0) {\n    node.error(\"Enter a time greater than zero.\", msg);\n    return null;\n}\n\nif (!p.d_unit || !p.t_unit || !p.v_unit) {\n    node.error(\"Select distance, time, and speed units.\", msg);\n    return null;\n}\n\nmsg.inputs = { d: { value: d, unit: p.d_unit }, t: { value: t, unit: p.t_unit } };\nmsg.outputs = { v: { unit: p.v_unit } };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 160,
+        "wires": [
+            [
+                "speed-demo-calc-a"
+            ]
+        ]
+    },
+    {
+        "id": "speed-demo-calc-a",
+        "type": "calcslive-calculate",
+        "z": "speed-two-methods-demo",
+        "name": "A: CalcsLive — from message",
+        "configNodeId": "3f3758f690a15c4d",
+        "articleId": "3M7ALBF4U-3BL",
+        "inputPQs": "",
+        "outputPQs": "",
+        "x": 790,
+        "y": 160,
+        "wires": [
+            [
+                "speed-demo-format-a",
+                "speed-demo-debug-a"
+            ]
+        ]
+    },
+    {
+        "id": "speed-demo-format-a",
+        "type": "function",
+        "z": "speed-two-methods-demo",
+        "name": "A: Format speed",
+        "func": "if (msg.payload && msg.payload.v) {\n    const v = msg.payload.v;\n    const num = parseFloat(v.value);\n    // up to 6 sig figs, strip trailing zeros\n    const formatted = parseFloat(num.toPrecision(6)).toString();\n    msg.payload = formatted + ' ' + v.unit;\n} else {\n    msg.payload = '—';\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1070,
+        "y": 160,
+        "wires": [
+            [
+                "speed-demo-result-a"
+            ]
+        ]
+    },
+    {
+        "id": "speed-demo-result-a",
+        "type": "ui-text",
+        "z": "speed-two-methods-demo",
+        "group": "speed-demo-a",
+        "order": 2,
+        "width": 12,
+        "height": 1,
+        "name": "A: Speed Result",
+        "label": "Speed",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "style": true,
+        "font": "",
+        "fontSize": 18,
+        "color": "#333333",
+        "className": "",
+        "x": 1290,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "speed-demo-debug-a",
+        "type": "debug",
+        "z": "speed-two-methods-demo",
+        "name": "A: Raw CalcsLive result",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 1010,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "speed-demo-catch-a",
+        "type": "catch",
+        "z": "speed-two-methods-demo",
+        "name": "A: Catch errors",
+        "scope": [
+            "speed-demo-calc-a",
+            "speed-demo-build"
+        ],
+        "uncaught": false,
+        "x": 780,
+        "y": 280,
+        "wires": [
+            [
+                "speed-demo-error-a"
+            ]
+        ]
+    },
+    {
+        "id": "speed-demo-error-a",
+        "type": "function",
+        "z": "speed-two-methods-demo",
+        "name": "A: Show error",
+        "func": "const err = msg.error || {};\nmsg.payload = '⚠ ' + (err.message || 'Calculation error');\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1070,
+        "y": 280,
+        "wires": [
+            [
+                "speed-demo-result-a"
+            ]
+        ]
+    },
+    {
+        "id": "speed-demo-calc-b",
+        "type": "calcslive-calculate",
+        "z": "speed-two-methods-demo",
+        "name": "B: CalcsLive — configured JSON",
+        "configNodeId": "3f3758f690a15c4d",
+        "articleId": "3M7ALBF4U-3BL",
+        "inputPQs": "{\n  \"d\": {\n    \"value\": 120,\n    \"unit\": \"km\"\n  },\n  \"t\": {\n    \"value\": 2,\n    \"unit\": \"h\"\n  }\n}",
+        "outputPQs": "{\n  \"v\": {\n    \"unit\": \"km/h\"\n  }\n}",
+        "x": 790,
+        "y": 420,
+        "wires": [
+            [
+                "speed-demo-format-b",
+                "speed-demo-debug-b"
+            ]
+        ]
+    },
+    {
+        "id": "speed-demo-format-b",
+        "type": "function",
+        "z": "speed-two-methods-demo",
+        "name": "B: Format speed",
+        "func": "if (msg.payload && msg.payload.v) {\n    const v = msg.payload.v;\n    const num = parseFloat(v.value);\n    // up to 6 sig figs, strip trailing zeros\n    const formatted = parseFloat(num.toPrecision(6)).toString();\n    msg.payload = formatted + ' ' + v.unit;\n} else {\n    msg.payload = '—';\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1070,
+        "y": 420,
+        "wires": [
+            [
+                "speed-demo-result-b"
+            ]
+        ]
+    },
+    {
+        "id": "speed-demo-result-b",
+        "type": "ui-text",
+        "z": "speed-two-methods-demo",
+        "group": "speed-demo-b",
+        "order": 2,
+        "width": 12,
+        "height": 1,
+        "name": "B: Speed Result",
+        "label": "Speed",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "style": true,
+        "font": "",
+        "fontSize": 18,
+        "color": "#333333",
+        "className": "",
+        "x": 1290,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "speed-demo-debug-b",
+        "type": "debug",
+        "z": "speed-two-methods-demo",
+        "name": "B: Raw CalcsLive result",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1010,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "speed-demo-catch-b",
+        "type": "catch",
+        "z": "speed-two-methods-demo",
+        "name": "B: Catch errors",
+        "scope": [
+            "speed-demo-calc-b"
+        ],
+        "uncaught": false,
+        "x": 780,
+        "y": 540,
+        "wires": [
+            [
+                "speed-demo-error-b"
+            ]
+        ]
+    },
+    {
+        "id": "speed-demo-error-b",
+        "type": "function",
+        "z": "speed-two-methods-demo",
+        "name": "B: Show error",
+        "func": "const err = msg.error || {};\nmsg.payload = '⚠ ' + (err.message || 'Calculation error');\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1070,
+        "y": 540,
+        "wires": [
+            [
+                "speed-demo-result-b"
+            ]
+        ]
+    },
+    {
+        "id": "speed-demo-run-b",
+        "type": "ui-button",
+        "z": "speed-two-methods-demo",
+        "group": "speed-demo-b",
+        "name": "B: Run configured JSON",
+        "label": "Run JSON example",
+        "order": 1,
+        "width": 12,
+        "height": 1,
+        "emulateClick": false,
+        "className": "",
+        "icon": "mdi-calculator",
+        "iconPosition": "left",
+        "payload": "calc",
+        "payloadType": "str",
+        "topic": "",
+        "topicType": "str",
+        "buttonColor": "primary",
+        "textColor": "",
+        "iconColor": "",
+        "enableClick": true,
+        "enablePointerdown": false,
+        "pointerdownPayload": "",
+        "pointerdownPayloadType": "str",
+        "enablePointerup": false,
+        "pointerupPayload": "",
+        "pointerupPayloadType": "str",
+        "x": 470,
+        "y": 420,
+        "wires": [
+            [
+                "speed-demo-calc-b"
+            ]
+        ]
+    },
+    {
+        "id": "speed-demo-inject",
+        "type": "inject",
+        "z": "speed-two-methods-demo",
+        "name": "B: Run from editor",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "payload": "",
+        "payloadType": "date",
+        "x": 460,
+        "y": 480,
+        "wires": [
+            [
+                "speed-demo-calc-b"
+            ]
+        ]
+    },
+    {
+        "id": "speed-demo-comment-a",
+        "type": "comment",
+        "z": "speed-two-methods-demo",
+        "name": "A: Runtime data from the dashboard form",
+        "info": "The form sends msg.payload. The function validates it and creates msg.inputs and msg.outputs. CalcsLive Inputs/Outputs fields are blank. No shared flow context is needed.",
+        "x": 390,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "speed-demo-comment-b",
+        "type": "comment",
+        "z": "speed-two-methods-demo",
+        "name": "B: Inputs and outputs configured inside CalcsLive",
+        "info": "Open the CalcsLive node and edit Inputs/Outputs JSON. Defaults: 120 km / 2 h, output km/h. The dashboard button or Inject node only triggers calculation. Expected result: 60 km/h.",
+        "x": 390,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "speed-demo-json-editor",
+        "type": "ui-template",
+        "z": "speed-two-methods-demo",
+        "group": "speed-demo-c",
+        "page": "",
+        "ui": "",
+        "name": "C: Edit inputs and outputs JSON",
+        "order": 1,
+        "width": 12,
+        "height": 0,
+        "head": "",
+        "format": "<template>\n<div class=\"pa-2\">\n<p class=\"mb-4\">Edit the JSON below, then run the same speed calculation.</p>\n<v-textarea v-model=\"inputsText\" label=\"Inputs JSON\" rows=\"7\" variant=\"outlined\" style=\"font-family:monospace\" spellcheck=\"false\"></v-textarea>\n<v-textarea v-model=\"outputsText\" label=\"Outputs JSON\" rows=\"4\" variant=\"outlined\" style=\"font-family:monospace\" spellcheck=\"false\"></v-textarea>\n<v-btn color=\"primary\" @click=\"send({payload:{inputsJson:inputsText,outputsJson:outputsText}})\">Run JSON</v-btn>\n</div>\n</template>\n<script>export default { data() { return { inputsText: JSON.stringify({d:{value:120,unit:'km'},t:{value:2,unit:'h'}},null,2), outputsText: JSON.stringify({v:{unit:'km/h'}},null,2) }; } }</script>",
+        "storeOutMessages": false,
+        "passthru": false,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 160,
+        "y": 680,
+        "wires": [
+            [
+                "speed-demo-parse-c"
+            ]
+        ]
+    },
+    {
+        "id": "speed-demo-parse-c",
+        "type": "function",
+        "z": "speed-two-methods-demo",
+        "name": "C: Parse and validate JSON",
+        "func": "try {\n    const p = msg.payload || {};\n    let inputs, outputs;\n    try { inputs = JSON.parse(p.inputsJson); }\n    catch (e) { throw new Error('Inputs JSON: ' + e.message); }\n    try { outputs = JSON.parse(p.outputsJson); }\n    catch (e) { throw new Error('Outputs JSON: ' + e.message); }\n    const object = x => x !== null && typeof x === 'object' && !Array.isArray(x);\n    if (!object(inputs) || !object(outputs)) throw new Error('Inputs and outputs must be JSON objects.');\n    for (const symbol of ['d', 't']) {\n        const q = inputs[symbol];\n        if (!object(q) || typeof q.value !== 'number' || !Number.isFinite(q.value) || typeof q.unit !== 'string' || !q.unit.trim())\n            throw new Error('Input ' + symbol + ' needs a numeric value and a unit string.');\n    }\n    if (inputs.d.value < 0 || inputs.t.value <= 0) throw new Error('Distance must be zero or more; time must be greater than zero.');\n    if (!object(outputs.v) || typeof outputs.v.unit !== 'string' || !outputs.v.unit.trim()) throw new Error('Output v needs a unit string.');\n    msg.inputs = inputs;\n    msg.outputs = outputs;\n    return msg;\n} catch (e) {\n    node.error(e.message, msg);\n    return null;\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 680,
+        "wires": [
+            [
+                "speed-demo-calc-c"
+            ]
+        ]
+    },
+    {
+        "id": "speed-demo-calc-c",
+        "type": "calcslive-calculate",
+        "z": "speed-two-methods-demo",
+        "name": "C: CalcsLive — from message",
+        "configNodeId": "3f3758f690a15c4d",
+        "articleId": "3M7ALBF4U-3BL",
+        "inputPQs": "",
+        "outputPQs": "",
+        "x": 720,
+        "y": 680,
+        "wires": [
+            [
+                "speed-demo-format-c",
+                "speed-demo-debug-c"
+            ]
+        ]
+    },
+    {
+        "id": "speed-demo-format-c",
+        "type": "function",
+        "z": "speed-two-methods-demo",
+        "name": "C: Format speed",
+        "func": "if (msg.payload && msg.payload.v) {\n    const v = msg.payload.v;\n    const num = parseFloat(v.value);\n    // up to 6 sig figs, strip trailing zeros\n    const formatted = parseFloat(num.toPrecision(6)).toString();\n    msg.payload = formatted + ' ' + v.unit;\n} else {\n    msg.payload = '—';\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1000,
+        "y": 680,
+        "wires": [
+            [
+                "speed-demo-result-c"
+            ]
+        ]
+    },
+    {
+        "id": "speed-demo-result-c",
+        "type": "ui-text",
+        "z": "speed-two-methods-demo",
+        "group": "speed-demo-c",
+        "order": 2,
+        "width": 12,
+        "height": 1,
+        "name": "C: Speed Result",
+        "label": "Speed",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "style": true,
+        "font": "",
+        "fontSize": 18,
+        "color": "#333333",
+        "className": "",
+        "x": 1220,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "speed-demo-debug-c",
+        "type": "debug",
+        "z": "speed-two-methods-demo",
+        "name": "C: Raw CalcsLive result",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 950,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "speed-demo-catch-c",
+        "type": "catch",
+        "z": "speed-two-methods-demo",
+        "name": "C: Catch errors",
+        "scope": [
+            "speed-demo-calc-c",
+            "speed-demo-parse-c"
+        ],
+        "uncaught": false,
+        "x": 710,
+        "y": 800,
+        "wires": [
+            [
+                "speed-demo-error-c"
+            ]
+        ]
+    },
+    {
+        "id": "speed-demo-error-c",
+        "type": "function",
+        "z": "speed-two-methods-demo",
+        "name": "C: Show error",
+        "func": "const err = msg.error || {};\nmsg.payload = '⚠ ' + (err.message || 'Calculation error');\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1000,
+        "y": 800,
+        "wires": [
+            [
+                "speed-demo-result-c"
+            ]
+        ]
+    },
+    {
+        "id": "speed-demo-comment-c",
+        "type": "comment",
+        "z": "speed-two-methods-demo",
+        "name": "C: Dashboard JSON → msg.inputs / msg.outputs → CalcsLive",
+        "info": "Edit both JSON documents on the dashboard. Parser validates the speed inputs and reports errors in the C result. CalcsLive configured JSON fields remain blank.",
+        "x": 380,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "9f566f5c71b66288",
+        "type": "ui-template",
+        "z": "speed-two-methods-demo",
+        "group": "speed-demo-a",
+        "page": "",
+        "ui": "",
+        "name": "Units Reference Link",
+        "order": 3,
+        "width": 12,
+        "height": 1,
+        "head": "",
+        "format": "<template>\n  <div class=\"d-flex align-center pa-2\" style=\"font-size: 13px;\">\n    <v-icon size=\"small\" class=\"mr-2\" color=\"primary\">mdi-book-open-variant</v-icon>\n    <span class=\"text-medium-emphasis mr-2\">Type any CalcsLive unit:</span>\n    <a href=\"https://calcslive.com/help/units-reference\" target=\"_blank\" rel=\"noopener\" class=\"text-primary text-decoration-none\">\n      Full units reference\n      <v-icon size=\"x-small\" class=\"ml-1\">mdi-open-in-new</v-icon>\n    </a>\n  </div>\n</template>\n",
+        "storeOutMessages": false,
+        "passthru": true,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 460,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "speed-demo-editor-d",
+        "type": "ui-template",
+        "z": "speed-two-methods-demo",
+        "group": "speed-demo-d",
+        "page": "",
+        "ui": "",
+        "name": "D: Article ID and JSON",
+        "order": 1,
+        "width": 12,
+        "height": 0,
+        "head": "",
+        "format": "<template>\n<div class=\"pa-2\">\n<p class=\"mb-4\">Enter an Article ID and its input/output symbols. The gauge shows the first requested output.</p><v-text-field v-model=\"articleId\" label=\"CalcsLive Article ID\" variant=\"outlined\"></v-text-field>\n<v-textarea v-model=\"inputsText\" label=\"Inputs JSON\" rows=\"7\" variant=\"outlined\" style=\"font-family:monospace\" spellcheck=\"false\"></v-textarea>\n<v-textarea v-model=\"outputsText\" label=\"Outputs JSON\" rows=\"4\" variant=\"outlined\" style=\"font-family:monospace\" spellcheck=\"false\"></v-textarea>\n<v-btn color=\"primary\" @click=\"send({payload:{articleId:articleId,inputsJson:inputsText,outputsJson:outputsText}})\">Run JSON</v-btn>\n</div>\n</template>\n<script>export default { data() { return { articleId: \"3M7ALBF4U-3BL\", inputsText: JSON.stringify({d:{value:120,unit:'km'},t:{value:2,unit:'h'}},null,2), outputsText: JSON.stringify({v:{unit:'km/h'}},null,2) }; } }</script>",
+        "storeOutMessages": false,
+        "passthru": false,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 180,
+        "y": 880,
+        "wires": [
+            [
+                "speed-demo-parse-d"
+            ]
+        ]
+    },
+    {
+        "id": "speed-demo-parse-d",
+        "type": "function",
+        "z": "speed-two-methods-demo",
+        "name": "D: Validate article and JSON",
+        "func": "try {\n const p=msg.payload || {};\n const article=String(p.articleId || '').trim();\n if(!article) throw new Error('Enter a CalcsLive Article ID.');\n const parse=(text,label)=>{try{return JSON.parse(text);}catch(e){throw new Error(label+': '+e.message);}};\n const inputs=parse(p.inputsJson,'Inputs JSON');\n const outputs=parse(p.outputsJson,'Outputs JSON');\n const obj=x=>x!==null && typeof x==='object' && !Array.isArray(x);\n if(!obj(inputs)||!obj(outputs)) throw new Error('Inputs and outputs must be JSON objects.');\n if(!Object.keys(outputs).length) throw new Error('Request at least one output for the gauge.');\n for(const [symbol,q] of Object.entries(inputs)) {\n if(!obj(q)||typeof q.value!=='number'||!Number.isFinite(q.value)||typeof q.unit!=='string') throw new Error('Input '+symbol+' needs a numeric value and unit string.');\n }\n for(const [symbol,q] of Object.entries(outputs)) {\n if(!obj(q)||typeof q.unit!=='string') throw new Error('Output '+symbol+' needs a unit string.');\n }\n msg.articleId=article;msg.inputs=inputs;msg.outputs=outputs;msg.gaugeSymbol=Object.keys(outputs)[0];return msg;\n} catch(e) {node.error(e.message,msg);return null;}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 880,
+        "wires": [
+            [
+                "speed-demo-calc-d"
+            ]
+        ]
+    },
+    {
+        "id": "speed-demo-calc-d",
+        "type": "calcslive-calculate",
+        "z": "speed-two-methods-demo",
+        "name": "D: CalcsLive — dashboard article",
+        "configNodeId": "3f3758f690a15c4d",
+        "articleId": "3M7ALBF4U-3BL",
+        "inputPQs": "",
+        "outputPQs": "",
+        "x": 720,
+        "y": 880,
+        "wires": [
+            [
+                "speed-demo-gauge-format-d",
+                "speed-demo-debug-d"
+            ]
+        ]
+    },
+    {
+        "id": "speed-demo-gauge-format-d",
+        "type": "function",
+        "z": "speed-two-methods-demo",
+        "name": "D: Output to gauge",
+        "func": "const symbol=msg.gaugeSymbol || Object.keys(msg.outputs || {})[0];\nconst q=msg.payload && msg.payload[symbol];\nconst value=q && Number(q.value);\nif(!q || !Number.isFinite(value)){node.error('No numeric result returned for '+symbol,msg);return null;}\nconst span=Math.max(Math.abs(value)*1.5,1);\nconst gauge={...msg,payload:Number(value.toPrecision(6)),ui_update:{label:symbol==='v'?'Speed':symbol,units:q.unit || '',min:value<0?-span:0,max:value<0?0:span,segments:[{color:'#0094CE',from:value<0?-span:0}]}};\nconst status={...msg,payload:'Calculated: '+symbol+' = '+Number(value.toPrecision(6))+' '+(q.unit || '')};\nreturn [gauge,status];",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1030,
+        "y": 880,
+        "wires": [
+            [
+                "speed-demo-gauge-d"
+            ],
+            [
+                "speed-demo-status-d",
+                "cf4e8c5d7e8564c1"
+            ]
+        ]
+    },
+    {
+        "id": "speed-demo-gauge-d",
+        "type": "ui-gauge",
+        "z": "speed-two-methods-demo",
+        "name": "D: Result gauge",
+        "group": "speed-demo-d",
+        "order": 3,
+        "value": "payload",
+        "valueType": "msg",
+        "width": 6,
+        "height": 4,
+        "gtype": "gauge-half",
+        "gstyle": "needle",
+        "title": "Speed",
+        "alwaysShowTitle": false,
+        "floatingTitlePosition": "top-left",
+        "units": "km/h",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "color": "#0094CE",
+                "from": 0
+            }
+        ],
+        "min": 0,
+        "max": 100,
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 1240,
+        "y": 880,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "speed-demo-status-d",
+        "type": "ui-text",
+        "z": "speed-two-methods-demo",
+        "group": "speed-demo-d",
+        "order": 2,
+        "width": 12,
+        "height": 1,
+        "name": "D: Calculation status",
+        "label": "",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "style": true,
+        "font": "",
+        "fontSize": 18,
+        "color": "#333333",
+        "className": "",
+        "x": 1260,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "speed-demo-debug-d",
+        "type": "debug",
+        "z": "speed-two-methods-demo",
+        "name": "D: Raw result",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 980,
+        "y": 940,
+        "wires": []
+    },
+    {
+        "id": "speed-demo-catch-d",
+        "type": "catch",
+        "z": "speed-two-methods-demo",
+        "name": "D: Catch errors",
+        "scope": [
+            "speed-demo-parse-d",
+            "speed-demo-calc-d",
+            "speed-demo-gauge-format-d"
+        ],
+        "uncaught": false,
+        "x": 720,
+        "y": 1000,
+        "wires": [
+            [
+                "speed-demo-error-d"
+            ]
+        ]
+    },
+    {
+        "id": "speed-demo-error-d",
+        "type": "function",
+        "z": "speed-two-methods-demo",
+        "name": "D: Display error",
+        "func": "msg.payload='⚠ '+((msg.error || {}).message || 'Calculation failed')+' — gauge shows last successful result.';return msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 980,
+        "y": 1000,
+        "wires": [
+            [
+                "speed-demo-status-d"
+            ]
+        ]
+    },
+    {
+        "id": "speed-demo-comment-d",
+        "type": "comment",
+        "z": "speed-two-methods-demo",
+        "name": "D: Dashboard Article ID + JSON → CalcsLive → gauge",
+        "info": "Article ID and JSON supplied entirely by dashboard. Gauge uses the first requested numeric output and automatically scales its range. Errors display separately; gauge retains last successful result.",
+        "x": 360,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "cf4e8c5d7e8564c1",
+        "type": "ui-template",
+        "z": "speed-two-methods-demo",
+        "group": "speed-demo-d",
+        "page": "",
+        "ui": "",
+        "name": "Link To CalcsLive Article",
+        "order": 4,
+        "width": 12,
+        "height": 1,
+        "head": "",
+        "format": "<template>\n  <div class=\"d-flex align-center pa-2\" style=\"font-size:13px\">\n    <v-icon size=\"small\" class=\"mr-2\" color=\"primary\">mdi-book-open-variant</v-icon>\n    <span class=\"text-medium-emphasis mr-2\">CalcsLive article:</span>\n    <a v-if=\"msg && msg.articleId\" :href=\"'https://calcslive.com/calculate/' + encodeURIComponent(msg.articleId)\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-primary text-decoration-none\">\n      View article {{ msg.articleId }}\n      <v-icon size=\"x-small\" class=\"ml-1\">mdi-open-in-new</v-icon>\n    </a>\n    <span v-else class=\"text-medium-emphasis\">Run a calculation to view its article.</span>\n  </div>\n</template>",
+        "storeOutMessages": false,
+        "passthru": true,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 1290,
+        "y": 940,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "speed-demo-intro-text",
+        "type": "ui-template",
+        "z": "speed-two-methods-demo",
+        "group": "speed-demo-intro",
+        "page": "",
+        "ui": "",
+        "name": "Intro: Four ways to use CalcsLive",
+        "order": 1,
+        "width": 12,
+        "height": 0,
+        "head": "",
+        "format": "<template>\n<div class=\"pa-2\" style=\"line-height:1.6\">\n<p class=\"mb-3\">Explore four ways to run CalcsLive calculations from Node-RED. A–C use the same speed calculator; D lets you choose an article from the dashboard.</p>\n<ul style=\"padding-left:22px\">\n<li><strong>A — Form inputs:</strong> Enter distance, time and units in a dashboard form. Node-RED prepares the data and sends it to CalcsLive.</li>\n<li><strong>B — JSON inside CalcsLive:</strong> Configure input values and output units in the CalcsLive node, then trigger it with the dashboard button or an Inject node.</li>\n<li><strong>C — Dashboard JSON editor:</strong> Edit the Inputs and Outputs JSON on the dashboard and run the speed calculation.</li>\n<li><strong>D — Choose your article:</strong> Enter a CalcsLive Article ID and its Inputs and Outputs JSON on the dashboard. View the first requested output on a gauge and open the linked article.</li>\n</ul>\n<p class=\"mt-3 mb-0\">CalcsLive accepts upstream values in their original units, handles the calculation and unit conversion, and returns\nresults in the units you request for display or downstream nodes.</p>\n\n<p class=\"mt-3 mb-0\">In other words, you can offload unit conversion and calculation from you flow to CalcsLive and enjoyr full Unit Freedom.</p>\n</div>\n</template>",
+        "storeOutMessages": false,
+        "passthru": false,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 380,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "speed-demo-a",
+        "type": "ui-group",
+        "name": "A — Form inputs",
+        "page": "speed-demo-page",
+        "width": "12",
+        "height": "1",
+        "order": 2,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "3f3758f690a15c4d",
+        "type": "calcslive-config",
+        "name": "engineered3d@gmail.com",
+        "baseUrl": "https://www.calcslive.com"
+    },
+    {
+        "id": "speed-demo-b",
+        "type": "ui-group",
+        "name": "B — JSON inside CalcsLive",
+        "page": "speed-demo-page",
+        "width": "12",
+        "height": "1",
+        "order": 3,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "speed-demo-c",
+        "type": "ui-group",
+        "name": "C — Dashboard JSON editor",
+        "page": "speed-demo-page",
+        "width": "12",
+        "height": "1",
+        "order": 4,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "speed-demo-d",
+        "type": "ui-group",
+        "name": "D — Choose your CalcsLive article",
+        "page": "speed-demo-page",
+        "width": "12",
+        "height": "1",
+        "order": 5,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "speed-demo-intro",
+        "type": "ui-group",
+        "name": "Intro",
+        "page": "speed-demo-page",
+        "width": "12",
+        "height": "1",
+        "order": 1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "speed-demo-page",
+        "type": "ui-page",
+        "name": "Speed Calculator - 4 Methods",
+        "ui": "51710b0090c36a8b",
+        "path": "/speed-two-methods",
+        "icon": "mdi-speedometer",
+        "layout": "notebook",
+        "theme": "db-theme",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 5,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "51710b0090c36a8b",
+        "type": "ui-base",
+        "name": "calcslive-mqtt",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": false,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": false
+    },
+    {
+        "id": "db-theme",
+        "type": "ui-theme",
+        "name": "Default",
+        "colors": {
+            "surface": "#ffffff",
+            "primary": "#0094CE",
+            "bgPage": "#eeeeee",
+            "groupBg": "#ffffff",
+            "groupOutline": "#cccccc"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "12px",
+            "groupGap": "12px",
+            "groupBorderRadius": "4px",
+            "widgetGap": "6px"
+        }
+    },
+    {
+        "id": "0e6442f4cc7b9d02",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "@flowfuse/node-red-dashboard": "1.30.2",
+            "@calcslive/node-red-calcslive": "0.1.0"
+        }
+    }
+]

@@ -1,0 +1,804 @@
+[
+    {
+        "id": "4cc02e7f50a4d005",
+        "type": "tab",
+        "label": "Speed Calculator - v3",
+        "disabled": false,
+        "info": "Speed Calculator: d, t => v using CalcsLive article 3M7ALBF4U-3BL\nRequires: @flowfuse/node-red-dashboard, node-red-calcslive\n\nhttp://127.0.0.1:1880/dashboard/speed-v3"
+    },
+    {
+        "id": "ab3da6f5bb45cb7e",
+        "type": "ui-number-input",
+        "z": "4cc02e7f50a4d005",
+        "group": "grp-inputs",
+        "name": "Distance",
+        "label": "d   Distance",
+        "order": 1,
+        "width": 6,
+        "height": 1,
+        "topic": "d_value",
+        "topicType": "str",
+        "min": "1",
+        "max": "2000",
+        "step": "10",
+        "tooltip": "",
+        "delay": "0",
+        "passthru": true,
+        "sendOnDelay": true,
+        "sendOnBlur": true,
+        "sendOnEnter": true,
+        "className": "",
+        "clearable": false,
+        "icon": "",
+        "iconPosition": "left",
+        "iconInnerPosition": "inside",
+        "spinner": "default",
+        "x": 220,
+        "y": 200,
+        "wires": [
+            [
+                "572d7ab77ab0528b"
+            ]
+        ]
+    },
+    {
+        "id": "4ef538b485463dbd",
+        "type": "ui-number-input",
+        "z": "4cc02e7f50a4d005",
+        "group": "grp-inputs",
+        "name": "Time",
+        "label": "t   Time",
+        "order": 3,
+        "width": 6,
+        "height": 1,
+        "topic": "t_value",
+        "topicType": "str",
+        "min": "0",
+        "max": "24",
+        "step": "1",
+        "tooltip": "",
+        "delay": "0",
+        "passthru": true,
+        "sendOnDelay": true,
+        "sendOnBlur": true,
+        "sendOnEnter": true,
+        "className": "",
+        "clearable": false,
+        "icon": "",
+        "iconPosition": "left",
+        "iconInnerPosition": "inside",
+        "spinner": "default",
+        "x": 210,
+        "y": 240,
+        "wires": [
+            [
+                "ed1e4709e20219df"
+            ]
+        ]
+    },
+    {
+        "id": "17655ac66af067af",
+        "type": "ui-template",
+        "z": "4cc02e7f50a4d005",
+        "group": "grp-inputs",
+        "page": "",
+        "ui": "",
+        "name": "Units Reference Link",
+        "order": 5,
+        "width": 12,
+        "height": 1,
+        "head": "",
+        "format": "<template>\n  <div class=\"d-flex align-center pa-2\" style=\"font-size: 13px;\">\n    <v-icon size=\"small\" class=\"mr-2\" color=\"primary\">mdi-book-open-variant</v-icon>\n    <span class=\"text-medium-emphasis mr-2\">Type any CalcsLive unit:</span>\n    <a href=\"https://calcslive.com/help/units-reference\" target=\"_blank\" rel=\"noopener\" class=\"text-primary text-decoration-none\">\n      Full units reference\n      <v-icon size=\"x-small\" class=\"ml-1\">mdi-open-in-new</v-icon>\n    </a>\n  </div>\n</template>\n",
+        "storeOutMessages": false,
+        "passthru": true,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 260,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "72bbc86c9783e3d1",
+        "type": "ui-text",
+        "z": "4cc02e7f50a4d005",
+        "group": "grp-output",
+        "order": 1,
+        "width": 4,
+        "height": 1,
+        "name": "Speed Result",
+        "label": "v  =",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "style": true,
+        "font": "",
+        "fontSize": 18,
+        "color": "#333333",
+        "className": "",
+        "x": 960,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "32b763a4f3b20963",
+        "type": "ui-button",
+        "z": "4cc02e7f50a4d005",
+        "group": "62690a84469092a1",
+        "name": "Calculate",
+        "label": "Calculate",
+        "order": 1,
+        "width": 4,
+        "height": 1,
+        "emulateClick": false,
+        "className": "",
+        "icon": "mdi-calculator",
+        "iconPosition": "left",
+        "payload": "calc",
+        "payloadType": "str",
+        "topic": "",
+        "topicType": "str",
+        "buttonColor": "primary",
+        "textColor": "",
+        "iconColor": "",
+        "enableClick": true,
+        "enablePointerdown": false,
+        "pointerdownPayload": "",
+        "pointerdownPayloadType": "str",
+        "enablePointerup": false,
+        "pointerupPayload": "",
+        "pointerupPayloadType": "str",
+        "x": 160,
+        "y": 400,
+        "wires": [
+            [
+                "8e4a27b1e16ead59"
+            ]
+        ]
+    },
+    {
+        "id": "572d7ab77ab0528b",
+        "type": "change",
+        "z": "4cc02e7f50a4d005",
+        "name": "Store d value",
+        "rules": [
+            {
+                "t": "set",
+                "p": "d_value",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 390,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4d522a0d9eb404a1",
+        "type": "change",
+        "z": "4cc02e7f50a4d005",
+        "name": "Store d unit",
+        "rules": [
+            {
+                "t": "set",
+                "p": "d_unit",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 730,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ed1e4709e20219df",
+        "type": "change",
+        "z": "4cc02e7f50a4d005",
+        "name": "Store t value",
+        "rules": [
+            {
+                "t": "set",
+                "p": "t_value",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 390,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "75cc6d2fea5afe00",
+        "type": "change",
+        "z": "4cc02e7f50a4d005",
+        "name": "Store t unit",
+        "rules": [
+            {
+                "t": "set",
+                "p": "t_unit",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 730,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "878a9cd16e486286",
+        "type": "change",
+        "z": "4cc02e7f50a4d005",
+        "name": "Store v unit",
+        "rules": [
+            {
+                "t": "set",
+                "p": "v_unit",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 730,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8e4a27b1e16ead59",
+        "type": "function",
+        "z": "4cc02e7f50a4d005",
+        "name": "Build CalcsLive Request",
+        "func": "const d_value = flow.get('d_value') ?? 0;\nconst d_unit  = flow.get('d_unit')  ?? 'km';\nconst t_value = flow.get('t_value') ?? 0;\nconst t_unit  = flow.get('t_unit')  ?? 'minute';\nconst v_unit  = flow.get('v_unit')  ?? 'm/s';\n\nmsg.articleId = '3M7ALBF4U-3BL';\nmsg.inputs = {\n    d: { value: parseFloat(d_value), unit: d_unit },\n    t: { value: parseFloat(t_value), unit: t_unit }\n};\nmsg.outputs = {\n    v: { unit: v_unit }\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 420,
+        "wires": [
+            [
+                "acd4f0ca83de8ba4"
+            ]
+        ]
+    },
+    {
+        "id": "acd4f0ca83de8ba4",
+        "type": "calcslive-calculate",
+        "z": "4cc02e7f50a4d005",
+        "name": "Speed (d,t) => v",
+        "configNodeId": "3f3758f690a15c4d",
+        "articleId": "3M7ALBF4U-3BL",
+        "inputPQs": "",
+        "outputPQs": "",
+        "x": 580,
+        "y": 420,
+        "wires": [
+            [
+                "f169a3263cef43c6"
+            ]
+        ]
+    },
+    {
+        "id": "88aef45a0fef1034",
+        "type": "catch",
+        "z": "4cc02e7f50a4d005",
+        "name": "Catch CalcsLive Errors",
+        "scope": [
+            "acd4f0ca83de8ba4"
+        ],
+        "uncaught": false,
+        "x": 560,
+        "y": 480,
+        "wires": [
+            [
+                "e20f7ecf336753af"
+            ]
+        ]
+    },
+    {
+        "id": "e20f7ecf336753af",
+        "type": "function",
+        "z": "4cc02e7f50a4d005",
+        "name": "Format Error",
+        "func": "const err = msg.error || {};\nmsg.payload = '⚠ ' + (err.message || 'Calculation error');\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 480,
+        "wires": [
+            [
+                "72bbc86c9783e3d1"
+            ]
+        ]
+    },
+    {
+        "id": "f169a3263cef43c6",
+        "type": "function",
+        "z": "4cc02e7f50a4d005",
+        "name": "Format Result",
+        "func": "if (msg.payload && msg.payload.v) {\n    const v = msg.payload.v;\n    const num = parseFloat(v.value);\n    // up to 6 sig figs, strip trailing zeros\n    const formatted = parseFloat(num.toPrecision(6)).toString();\n    msg.payload = formatted + ' ' + v.unit;\n} else {\n    msg.payload = '—';\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 420,
+        "wires": [
+            [
+                "72bbc86c9783e3d1"
+            ]
+        ]
+    },
+    {
+        "id": "05ea7cefd7ee938f",
+        "type": "ui-dropdown",
+        "z": "4cc02e7f50a4d005",
+        "group": "grp-inputs",
+        "name": "Distance Unit",
+        "label": "Distance Unit",
+        "tooltip": "",
+        "order": 2,
+        "width": "6",
+        "height": "1",
+        "passthru": true,
+        "multiple": false,
+        "chips": false,
+        "clearable": false,
+        "options": [
+            {
+                "label": "km",
+                "value": "km",
+                "type": "str"
+            },
+            {
+                "label": "m",
+                "value": "m",
+                "type": "str"
+            },
+            {
+                "label": "ft",
+                "value": "ft",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "d_unit",
+        "topicType": "msg",
+        "className": "",
+        "typeIsComboBox": true,
+        "msgTrigger": "onChange",
+        "x": 570,
+        "y": 200,
+        "wires": [
+            [
+                "4d522a0d9eb404a1"
+            ]
+        ]
+    },
+    {
+        "id": "3110accf0b18327f",
+        "type": "ui-dropdown",
+        "z": "4cc02e7f50a4d005",
+        "group": "grp-inputs",
+        "name": "Time Unit",
+        "label": "Time Unit",
+        "tooltip": "",
+        "order": 4,
+        "width": "6",
+        "height": "1",
+        "passthru": true,
+        "multiple": false,
+        "chips": false,
+        "clearable": false,
+        "options": [
+            {
+                "label": "h",
+                "value": "h",
+                "type": "str"
+            },
+            {
+                "label": "minute",
+                "value": "minute",
+                "type": "str"
+            },
+            {
+                "label": "s",
+                "value": "s",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "t_unit",
+        "topicType": "msg",
+        "className": "",
+        "typeIsComboBox": true,
+        "msgTrigger": "onChange",
+        "x": 560,
+        "y": 240,
+        "wires": [
+            [
+                "75cc6d2fea5afe00"
+            ]
+        ]
+    },
+    {
+        "id": "831806c91c256ecf",
+        "type": "ui-dropdown",
+        "z": "4cc02e7f50a4d005",
+        "group": "grp-output",
+        "name": "Speed Unit",
+        "label": "Speed Unit",
+        "tooltip": "",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "multiple": false,
+        "chips": false,
+        "clearable": false,
+        "options": [
+            {
+                "label": "km/h",
+                "value": "km/h",
+                "type": "str"
+            },
+            {
+                "label": "m/s",
+                "value": "m/s",
+                "type": "str"
+            },
+            {
+                "label": "fpm",
+                "value": "fpm",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "v_unit",
+        "topicType": "msg",
+        "className": "",
+        "typeIsComboBox": true,
+        "msgTrigger": "onChange",
+        "x": 570,
+        "y": 280,
+        "wires": [
+            [
+                "878a9cd16e486286"
+            ]
+        ]
+    },
+    {
+        "id": "c0506dcfa2ccbfef",
+        "type": "ui-form",
+        "z": "4cc02e7f50a4d005",
+        "name": "",
+        "group": "1796c7dc81f9e2b9",
+        "label": "",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "options": [
+            {
+                "label": "distance",
+                "key": "d",
+                "type": "number",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "d_unit",
+                "key": "d_unit",
+                "type": "dropdown",
+                "required": false,
+                "rows": null
+            },
+            {
+                "label": "time",
+                "key": "t",
+                "type": "number",
+                "required": false,
+                "rows": null
+            },
+            {
+                "label": "t_unit",
+                "key": "t_unit",
+                "type": "dropdown",
+                "required": false,
+                "rows": null
+            },
+            {
+                "label": "speed",
+                "key": "v",
+                "type": "number",
+                "required": false,
+                "rows": null
+            },
+            {
+                "label": "v_unit",
+                "key": "v_unit",
+                "type": "dropdown",
+                "required": false,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "d": "",
+            "d_unit": "",
+            "t": "",
+            "t_unit": "",
+            "v": "",
+            "v_unit": ""
+        },
+        "payload": "",
+        "submit": "submit",
+        "cancel": "clear",
+        "resetOnSubmit": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "splitLayout": true,
+        "className": "",
+        "passthru": false,
+        "dropdownOptions": [
+            {
+                "dropdown": "d_unit",
+                "value": "km",
+                "label": "km"
+            },
+            {
+                "dropdown": "d_unit",
+                "value": "m",
+                "label": "m"
+            },
+            {
+                "dropdown": "t_unit",
+                "value": "h",
+                "label": "h"
+            },
+            {
+                "dropdown": "t_unit",
+                "value": "minute",
+                "label": "minute"
+            },
+            {
+                "dropdown": "t_unit",
+                "value": "s",
+                "label": "s"
+            },
+            {
+                "dropdown": "v_unit",
+                "value": "km/h",
+                "label": "km/h"
+            },
+            {
+                "dropdown": "v_unit",
+                "value": "m/s",
+                "label": "m/s"
+            },
+            {
+                "dropdown": "v_unit",
+                "value": "fpm",
+                "label": "fpm"
+            }
+        ],
+        "x": 150,
+        "y": 620,
+        "wires": [
+            [
+                "91816b29bf9faa28"
+            ]
+        ]
+    },
+    {
+        "id": "91816b29bf9faa28",
+        "type": "function",
+        "z": "4cc02e7f50a4d005",
+        "name": "Run Calculation in Form",
+        "func": "const p = msg.payload || {};\n\nconst d = Number(p.d);\nconst t = Number(p.t);\n\nif (p.d === \"\" || p.d == null || !Number.isFinite(d) || d < 0) {\n    node.error(\"Enter a valid distance of zero or more.\", msg);\n    return null;\n}\n\nif (p.t === \"\" || p.t == null || !Number.isFinite(t) || t <= 0) {\n    node.error(\"Enter a time greater than zero.\", msg);\n    return null;\n}\n\nif (!p.d_unit || !p.t_unit || !p.v_unit) {\n    node.error(\"Select distance, time, and speed units.\", msg);\n    return null;\n}\n\nflow.set(\"d_value\", d);\nflow.set(\"d_unit\", p.d_unit);\nflow.set(\"t_value\", t);\nflow.set(\"t_unit\", p.t_unit);\nflow.set(\"v_unit\", p.v_unit);\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 620,
+        "wires": [
+            [
+                "8e4a27b1e16ead59"
+            ]
+        ]
+    },
+    {
+        "id": "grp-inputs",
+        "type": "ui-group",
+        "name": "Inputs",
+        "page": "db-page",
+        "width": "12",
+        "height": "1",
+        "order": 1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "grp-output",
+        "type": "ui-group",
+        "name": "Output & Run",
+        "page": "db-page",
+        "width": "12",
+        "height": "1",
+        "order": 2,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "62690a84469092a1",
+        "type": "ui-group",
+        "name": "Actions",
+        "page": "db-page",
+        "width": 6,
+        "height": 1,
+        "order": 3,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "3f3758f690a15c4d",
+        "type": "calcslive-config",
+        "name": "engineered3d@gmail.com",
+        "baseUrl": "http://localhost:3000"
+    },
+    {
+        "id": "1796c7dc81f9e2b9",
+        "type": "ui-group",
+        "name": "Input Form",
+        "page": "db-page",
+        "width": 6,
+        "height": 1,
+        "order": 4,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "db-page",
+        "type": "ui-page",
+        "name": "Speed Calculator - v3.0",
+        "ui": "51710b0090c36a8b",
+        "path": "/speed-v3",
+        "icon": "mdi-speedometer",
+        "layout": "notebook",
+        "theme": "db-theme",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 3,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "51710b0090c36a8b",
+        "type": "ui-base",
+        "name": "calcslive-mqtt",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": false,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": false
+    },
+    {
+        "id": "db-theme",
+        "type": "ui-theme",
+        "name": "Default",
+        "colors": {
+            "surface": "#ffffff",
+            "primary": "#0094CE",
+            "bgPage": "#eeeeee",
+            "groupBg": "#ffffff",
+            "groupOutline": "#cccccc"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "12px",
+            "groupGap": "12px",
+            "groupBorderRadius": "4px",
+            "widgetGap": "6px"
+        }
+    },
+    {
+        "id": "b199615f6ef56b87",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "@flowfuse/node-red-dashboard": "1.30.2",
+            "node-red-calcslive": "0.1.0"
+        }
+    }
+]
