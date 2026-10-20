@@ -1,6 +1,6 @@
 {
   "name": "@calcslive/node-red-calcslive",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Unit agnostic calculations with automated unit conversion for Node-RED via CalcsLive. 630+ units, 70+ categories, from unit conversion to unit freedom.",
   "keywords": [
     "node-red",
